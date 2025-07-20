@@ -19,4 +19,4 @@ bet_type, double_mode = bet_type_selector()
 numbers = input_numbers(bet_type, double_mode)
 
 # ✅ ใส่ราคา
-price_data = input_prices()
+input_prices(numbers, bet_type)
