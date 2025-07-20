@@ -1,49 +1,40 @@
 import streamlit as st
 
-def input_prices(selected_numbers, bet_type):
-    if "bill_table" not in st.session_state:
-        st.session_state.bill_table = []
+# ✅ ฟังก์ชันสำหรับใส่ราคาบน/ล่าง และเพิ่มบิลสำหรับเลขทั้งหมด
 
-    if not selected_numbers:
-        st.info("กรุณากรอกเลขก่อน")
-        return
+def input_price(numbers, bet_type):
+    if not numbers:
+        st.info("ยังไม่มีเลขที่ต้องการใส่ราคา")
+        return []
 
-    # ✅ แสดงเลขทั้งหมดในบรรทัดเดียว
-    st.markdown("<h5 style='margin-bottom: 5px;'>เลขชุด:</h5>", unsafe_allow_html=True)
+    # ✅ จัดเรียงเลขให้อยู่ในแถวเดียวกัน
     st.markdown(
-        f"<div style='font-size: 24px; font-weight: bold; color: #3498db;'>{' '.join(selected_numbers)}</div>",
+        f"""
+        <div style='font-size:22px; font-weight:bold; color:#2980b9; margin-bottom:10px;'>
+            {' '.join(numbers)}
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
-    # ✅ ช่องใส่ราคา บน/ล่าง + ปุ่มเพิ่มบิล
-    col1, col2, col3 = st.columns([2, 2, 1])
+    # ✅ ใส่ราคาบน/ล่าง บรรทัดเดียวกัน + ปุ่มเพิ่มบิล
+    col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
-        top_price = st.number_input(
-            label="ใส่ราคาบน",
-            min_value=0,
-            step=1,
-            key="top_price_all",
-            label_visibility="visible"
-        )
+        price_top = st.number_input("ใส่ราคาบน", min_value=0, step=1, label_visibility="collapsed", key="price_top")
     with col2:
-        bottom_price = st.number_input(
-            label="ใส่ราคาล่าง",
-            min_value=0,
-            step=1,
-            key="bottom_price_all",
-            label_visibility="visible"
-        )
+        price_bottom = st.number_input("ใส่ราคาล่าง", min_value=0, step=1, label_visibility="collapsed", key="price_bottom")
     with col3:
-        if st.button("➕ เพิ่มบิล", key="add_all"):
-            for number in selected_numbers:
-                st.session_state.bill_table.append({
-                    "bet_type": bet_type,
-                    "number": number,
-                    "top": top_price,
-                    "bottom": bottom_price
-                })
-            st.success("เพิ่มบิลทั้งหมดสำเร็จแล้ว ✅")
-            # ✅ เคลียร์ selected_numbers หลังเพิ่ม
-            st.session_state.selected_numbers = []
-            st.session_state.top_price_all = 0
-            st.session_state.bottom_price_all = 0
+        add_bill = st.button("➕ เพิ่มบิล", use_container_width=True)
+
+    bills = []
+    if add_bill:
+        for number in numbers:
+            bills.append({
+                "type": bet_type,
+                "number": number,
+                "top": price_top,
+                "bottom": price_bottom
+            })
+        st.session_state.selected_numbers.clear()
+
+    return bills
