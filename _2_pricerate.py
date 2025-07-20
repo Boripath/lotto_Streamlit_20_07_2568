@@ -1,37 +1,40 @@
 import streamlit as st
 
 def select_pricerate():
-    st.markdown("### ")  # ช่องว่างเล็กน้อยให้พอดีกับหัวข้อ
-
-    # ใช้ HTML + selectbox ด้วย key เฉพาะ
     st.markdown(
         """
         <style>
-        .inline-container {
+        .price-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        .inline-label {
             font-size: 18px;
-            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        .price-label {
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+        .price-box {
+            flex-grow: 1;
         }
         </style>
-        <div class='inline-container'>
-            <div class='inline-label'>💸 อัตราจ่าย :</div>
+        <div class='price-row'>
+            <div class='price-label'>💸 อัตราจ่าย :</div>
+            <div class='price-box'>
         """,
         unsafe_allow_html=True
     )
 
-    # วาง selectbox ข้างใน container
+    # แทรก selectbox ลงในบรรทัดเดียวกับ HTML
     rate = st.selectbox(
-        label="",  # ไม่แสดง label ด้านบน
+        label="",
         options=["บาทละ 70", "บาทละ 90"],
         index=0,
         label_visibility="collapsed",
         key="rate_select"
     )
 
-    st.markdown("</div>", unsafe_allow_html=True)  # ปิด div .inline-container
+    # ปิดแท็ก HTML ที่เปิดไว้
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
     return rate
