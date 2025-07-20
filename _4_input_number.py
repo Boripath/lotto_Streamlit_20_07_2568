@@ -25,7 +25,7 @@ def input_numbers(bet_type, double_mode):
             label_visibility="collapsed"
         )
         raw_input = raw_input.replace("\n", " ")
-        split_raw = re.split(r"[\s,/"]+", raw_input.strip())
+        split_raw = re.split(r"[\s,/]+", raw_input.strip())
 
         if bet_type == "2 ตัว":
             new_numbers = [num[i:i+2] for num in split_raw for i in range(0, len(num), 2) if len(num[i:i+2]) == 2]
@@ -67,14 +67,11 @@ def input_numbers(bet_type, double_mode):
         </style>
     """, unsafe_allow_html=True)
 
-    # ✅ ใช้ HTML กับ st.button คลุมตัวเลขทั้งหมด
+    # ✅ แสดงตัวเลขในรูปแบบ Grid และลบด้วยปุ่ม
     st.markdown('<div class="number-grid">', unsafe_allow_html=True)
-    cols = st.columns(10)
     for i, num in enumerate(st.session_state.selected_numbers.copy()):
-        col = cols[i % 10]
-        with col:
-            if st.button(num, key=f"del_{num}"):
-                st.session_state.selected_numbers.remove(num)
+        if st.button(num, key=f"del_{num}"):
+            st.session_state.selected_numbers.remove(num)
     st.markdown('</div>', unsafe_allow_html=True)
 
     return st.session_state.selected_numbers
