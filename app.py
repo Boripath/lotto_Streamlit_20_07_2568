@@ -6,6 +6,8 @@ from _4_input_number import input_numbers
 from _5_input_price import input_price
 from _6_bill_table import show_bill_table
 from _7_note import show_note_and_total
+from _8_summary_footer import show_summary_footer
+
 st.set_page_config(page_title="โพยหวยออนไลน์", layout="centered")
 
 # ✅ แสดงหัวเว็บ
@@ -28,3 +30,6 @@ show_bill_table()
 
 # ✅ แสดงโน้ตและยอดรวม
 show_note_and_total()
+
+# ✅ แสดงปุ่มส่งโพย
+show_summary_footer()
