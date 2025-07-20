@@ -1,79 +1,48 @@
 import streamlit as st
 
-# ตั้งค่าประเภทการแทง
-bet_types = ["2 ตัว", "3 ตัว", "6 กลับ", "วิ่ง", "รูด", "19 ประตู"]
+def bet_type_selector():
+    st.markdown("### ")
 
-# ค่าเริ่มต้นถ้ายังไม่มีใน session
-if "selected_bet_type" not in st.session_state:
-    st.session_state.selected_bet_type = bet_types[0]
+    # ✅ เก็บประเภทที่เลือกไว้ใน session_state
+    if "selected_bet_type" not in st.session_state:
+        st.session_state.selected_bet_type = "2 ตัว"
 
-# ส่วนหัว
-st.markdown("### 🎯 ประเภทการแทง")
+    if "double_mode" not in st.session_state:
+        st.session_state.double_mode = False
 
-# CSS สำหรับปุ่มที่ใช้ทั้งแสดงและเลือก
-st.markdown("""
-    <style>
-    .bet-buttons-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
+    # ✅ ฟังก์ชันเลือกประเภทการแทง
+    def set_bet_type(bet_type):
+        st.session_state.selected_bet_type = bet_type
 
-    .bet-button {
-        border: 2px solid #1E90FF;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        background-color: white;
-        color: #1E90FF;
-        transition: all 0.2s ease;
-    }
+    # ✅ ฟังก์ชัน toggle เลขเบิ้ล/ตอง
+    def toggle_double():
+        st.session_state.double_mode = not st.session_state.double_mode
 
-    .bet-button.selected {
-        background-color: #1E90FF;
-        color: white;
-    }
+    # ✅ ปุ่มประเภทการแทง
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    with col1:
+        st.button("2 ตัว", on_click=set_bet_type, args=("2 ตัว",), use_container_width=True,
+                  type="primary" if st.session_state.selected_bet_type == "2 ตัว" else "secondary")
+    with col2:
+        st.button("3 ตัว", on_click=set_bet_type, args=("3 ตัว",), use_container_width=True,
+                  type="primary" if st.session_state.selected_bet_type == "3 ตัว" else "secondary")
+    with col3:
+        st.button("6 กลับ", on_click=set_bet_type, args=("6 กลับ",), use_container_width=True,
+                  type="primary" if st.session_state.selected_bet_type == "6 กลับ" else "secondary")
+    with col4:
+        st.button("วิ่ง", on_click=set_bet_type, args=("วิ่ง",), use_container_width=True,
+                  type="primary" if st.session_state.selected_bet_type == "วิ่ง" else "secondary")
+    with col5:
+        st.button("รูด", on_click=set_bet_type, args=("รูด",), use_container_width=True,
+                  type="primary" if st.session_state.selected_bet_type == "รูด" else "secondary")
+    with col6:
+        st.button("19 ประตู", on_click=set_bet_type, args=("19 ประตู",), use_container_width=True,
+                  type="primary" if st.session_state.selected_bet_type == "19 ประตู" else "secondary")
 
-    .bet-button:hover {
-        background-color: #e6f2ff;
-    }
-    </style>
-""", unsafe_allow_html=True)
+    # ✅ ปุ่ม +ใส่เลขเบิ้ล/ตอง
+    st.markdown("---")
+    double_btn_class = "primary" if st.session_state.double_mode else "secondary"
+    st.button("➕ ใส่เลขเบิ้ล/ตอง", on_click=toggle_double, use_container_width=True, type=double_btn_class)
 
-# แสดงปุ่มแบบ HTML + Form (1 บรรทัดเรียงกัน)
-with st.form("bet_type_form", clear_on_submit=True):
-    # สร้างปุ่มแบบ HTML
-    html_buttons = "<div class='bet-buttons-container'>"
-    for i, label in enumerate(bet_types):
-        selected = "selected" if label == st.session_state.selected_bet_type else ""
-        html_buttons += f"""
-            <button name="bet_button" type="submit" value="{label}" class="bet-button {selected}">{label}</button>
-        """
-    html_buttons += "</div>"
-
-    # แสดง HTML ปุ่ม
-    st.markdown(html_buttons, unsafe_allow_html=True)
-
-    # รับค่าการเลือก
-    selected = st.form_submit_button()
-    if selected:
-        # อ่านค่าปุ่มจากฟอร์ม
-        selected_type = st.experimental_get_query_params().get("bet_button", [None])[0]
-        if selected_type in bet_types:
-            st.session_state.selected_bet_type = selected_type
-
-# แสดงผลที่เลือก
-st.info(f"🔵 คุณเลือกประเภท: **{st.session_state.selected_bet_type}**")
-
-# ปุ่มด้านล่าง
-st.markdown("""
-<div style='text-align:center; margin-top:10px;'>
-    <button style='background-color:#1E90FF; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;'>
-        ➕ ใส่เลขเบิ้ล/ตอง
-    </button>
-</div>
-""", unsafe_allow_html=True)
+    # ✅ คืนค่าไปใช้งานต่อ
+    return st.session_state.selected_bet_type, st.session_state.double_mode
