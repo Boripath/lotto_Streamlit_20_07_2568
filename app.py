@@ -9,4 +9,3 @@ render_header()
 
 # ✅ เลือกอัตราจ่าย
 rate = select_pricerate()
-st.write(f"คุณเลือกอัตราจ่าย: {rate}")
