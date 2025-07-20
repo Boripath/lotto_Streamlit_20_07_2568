@@ -1,7 +1,7 @@
 import streamlit as st
 from _1_header import render_header
 from _2_pricerate import select_pricerate
-from _3_bet_type import select_bet_type
+from _3_bet_type import bet_type_selector
 
 st.set_page_config(page_title="โพยหวยออนไลน์", layout="centered")
 
@@ -12,4 +12,4 @@ render_header()
 rate = select_pricerate()
 
 # ✅ เลือกประเภทการแทง
-selected_bet_type = select_bet_type()
+bet_type, double_mode = bet_type_selector()
