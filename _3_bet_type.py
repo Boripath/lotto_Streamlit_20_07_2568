@@ -1,74 +1,86 @@
 import streamlit as st
 
-def select_bet_type():
-    # ✅ เก็บค่าปัจจุบันไว้ใน session
-    if "selected_bet_type" not in st.session_state:
-        st.session_state.selected_bet_type = "2 ตัว"
+# ----------------------------
+# กำหนดค่าตั้งต้น
+# ----------------------------
+bet_types = ["2 ตัว", "3 ตัว", "6 กลับ", "วิ่ง", "รูด", "19 ประตู"]
 
-    # 🔹 ปุ่มทั้งหมด
-    bet_types = ["2 ตัว", "3 ตัว", "6 กลับ", "วิ่ง", "รูด", "19 ประตู"]
+# สร้างสถานะครั้งแรก
+if "selected_bet_type" not in st.session_state:
+    st.session_state.selected_bet_type = "2 ตัว"
 
-    st.markdown("### 🎯 ประเภทการแทง")
+# ----------------------------
+# HTML และ CSS
+# ----------------------------
+st.markdown("""
+<style>
+.bet-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.bet-button {
+    border: 2px solid #3399ff;
+    color: #3399ff;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.bet-button:hover {
+    background-color: #e6f2ff;
+}
+.bet-button.selected {
+    background-color: #3399ff;
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    # ✅ Custom CSS
-    st.markdown("""
-        <style>
-        .bet-button-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .bet-button {
-            border: 2px solid #007BFF;
-            border-radius: 6px;
-            padding: 6px 16px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            background-color: white;
-            color: #007BFF;
-            transition: 0.2s;
-        }
-        .bet-button:hover {
-            background-color: #e6f0ff;
-        }
-        .bet-button.active {
-            background-color: #007BFF;
-            color: white;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+# ----------------------------
+# JS ฟังค์ชันส่งค่าผ่าน query params
+# ----------------------------
+st.markdown("""
+<script>
+function selectBetType(type) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("bet_type", type);
+    window.location.href = url.toString();
+}
+</script>
+""", unsafe_allow_html=True)
 
-    # ✅ Render ปุ่มแนวนอนด้วย HTML + Button + Hidden form
-    html_buttons = '<div class="bet-button-row">'
-    for label in bet_types:
-        active_class = "active" if label == st.session_state.selected_bet_type else ""
-        html_buttons += f"""
-            <form method="post">
-                <input type="hidden" name="selected" value="{label}">
-                <button class="bet-button {active_class}" type="submit">{label}</button>
-            </form>
-        """
-    html_buttons += "</div>"
+# ----------------------------
+# ส่วนแสดงปุ่ม
+# ----------------------------
+st.markdown("<h4>🎯 ประเภทการแทง</h4>", unsafe_allow_html=True)
 
-    # ✅ ใช้ st.form ส่งค่า selected แบบ manual (Streamlit 1.30+)
-    st.markdown(html_buttons, unsafe_allow_html=True)
+html_buttons = "<div class='bet-container'>"
+for bt in bet_types:
+    selected_class = "selected" if bt == st.session_state.selected_bet_type else ""
+    html_buttons += f"""
+    <button class='bet-button {selected_class}' onclick=\"selectBetType('{bt}')\">{bt}</button>
+    """
+html_buttons += "</div>"
+st.markdown(html_buttons, unsafe_allow_html=True)
 
-    # ✅ ดักค่าที่เลือกจาก POST
-    if "selected" in st.session_state:
-        st.session_state.selected_bet_type = st.session_state["selected"]
+# ----------------------------
+# อ่านค่าจาก URL แล้วอัปเดต session_state
+# ----------------------------
+bet_type_from_url = st.experimental_get_query_params().get("bet_type", [None])[0]
+if bet_type_from_url and bet_type_from_url in bet_types:
+    st.session_state.selected_bet_type = bet_type_from_url
 
-    # ✅ แต่เนื่องจาก Streamlit ไม่มี request.form → ใช้วิธีง่ายสุด:
-    # ให้แสดงปุ่มปกติควบคู่แบบ invisible ก็ยังได้
-
-    # 🔹 ปุ่มช่วยอยู่แถวที่ 2
-    st.markdown(
-        """
-        <div class="bet-button-row">
-            <button class="bet-button active" disabled>➕ ใส่เลขเบิ้ล/ตอง</button>
-        </div>
-        """, unsafe_allow_html=True
-    )
-
-    return st.session_state.selected_bet_type
+# ----------------------------
+# ปุ่มระบบช่วย
+# ----------------------------
+st.markdown("""
+<div class='bet-container'>
+    <button class='bet-button'>+ ใส่เลขเบิ้ล</button>
+    <button class='bet-button'>+ ใส่เลขโต๊ด</button>
+    <button class='bet-button'>+ สลับเลขแบบ 6 กลับ</button>
+</div>
+""", unsafe_allow_html=True)
