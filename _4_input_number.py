@@ -2,11 +2,13 @@ import streamlit as st
 import re
 import itertools
 
-# ใช้ SessionState เก็บเลขที่เลือกไว้
-if "selected_numbers" not in st.session_state:
-    st.session_state.selected_numbers = []
+# ✅ ฟังก์ชันสำหรับกรอกเลขและแสดงแบบ Grid แนวนอน
 
 def input_numbers(bet_type, double_mode):
+    # ✅ ป้องกัน error ถ้า session_state ไม่มี selected_numbers
+    if "selected_numbers" not in st.session_state:
+        st.session_state.selected_numbers = []
+
     # ✅ ถ้าเปิดโหมดเลขเบิ้ล/เลขตอง
     if double_mode:
         if bet_type == "2 ตัว":
@@ -23,8 +25,7 @@ def input_numbers(bet_type, double_mode):
             label_visibility="collapsed"
         )
         raw_input = raw_input.replace("\n", " ")
-        split_raw = re.split(r'[\s,/]+', raw_input.strip())
-
+        split_raw = re.split(r"[\s,/"]+", raw_input.strip())
 
         if bet_type == "2 ตัว":
             new_numbers = [num[i:i+2] for num in split_raw for i in range(0, len(num), 2) if len(num[i:i+2]) == 2]
@@ -40,35 +41,35 @@ def input_numbers(bet_type, double_mode):
         else:
             new_numbers = split_raw
 
-    # เพิ่มเลขใหม่เข้า session_state
+    # ✅ เพิ่มเลขใหม่เข้า session_state แบบไม่ซ้ำ
     for num in new_numbers:
         if num and num not in st.session_state.selected_numbers:
             st.session_state.selected_numbers.append(num)
 
-    # ✅ แสดงตัวเลขแบบแนวนอนหลายแถว (wrap) พร้อมลบเมื่อคลิก
+    # ✅ สร้าง Layout แนวนอนแบบ Wrap และคลิกเพื่อลบ
     st.markdown("""
         <style>
-        .grid-box {
+        .number-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             margin-top: 10px;
         }
-        .grid-item {
+        .number-box {
             background-color: #3498db;
             color: white;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 10px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            border: none;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="grid-box">', unsafe_allow_html=True)
-    cols = st.columns(10)  # สร้าง column เผื่อ layout
+    # ✅ ใช้ HTML กับ st.button คลุมตัวเลขทั้งหมด
+    st.markdown('<div class="number-grid">', unsafe_allow_html=True)
+    cols = st.columns(10)
     for i, num in enumerate(st.session_state.selected_numbers.copy()):
         col = cols[i % 10]
         with col:
