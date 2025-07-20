@@ -1,53 +1,61 @@
 import streamlit as st
 
-def select_bet_type():
-    st.markdown("### 🎯 ประเภทการแทง")
+# กำหนดรายการประเภทการแทง
+bet_types = ["2 ตัว", "3 ตัว", "6 กลับ", "วิ่ง", "รูด", "19 ประตู"]
 
-    bet_types = ["2 ตัว", "3 ตัว", "6 กลับ", "วิ่ง", "รูด", "19 ประตู"]
-    helper_button = "➕ ใส่เลขเบิ้ล/ตอง"
+# สร้างค่าเริ่มต้นถ้ายังไม่มีใน session
+if "selected_bet_type" not in st.session_state:
+    st.session_state.selected_bet_type = bet_types[0]
 
-    # ตั้งค่าเริ่มต้น
-    if "selected_bet_type" not in st.session_state:
-        st.session_state.selected_bet_type = "2 ตัว"
+# แสดงหัวข้อ
+st.markdown("### 🎯 ประเภทการแทง")
 
-    # ✅ CSS Styling
-    st.markdown("""
-        <style>
-        .bet-button {
-            border: 2px solid #00aaff;
-            border-radius: 6px;
-            padding: 8px;
-            margin: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #00aaff;
-            background-color: white;
-            width: 100%;
-            text-align: center;
-        }
-        .bet-button.selected {
-            background-color: #00aaff !important;
-            color: white !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+# CSS สำหรับปุ่ม
+st.markdown("""
+    <style>
+    .bet-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .bet-button {
+        border: 2px solid #00aaff;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #00aaff;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .bet-button:hover {
+        background-color: #e6f7ff;
+    }
+    .bet-button.selected {
+        background-color: #00aaff;
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-    # ✅ แนวนอน: 6 ปุ่มใน 6 columns
-    cols = st.columns(len(bet_types))
-    for i, label in enumerate(bet_types):
-        is_selected = (label == st.session_state.selected_bet_type)
-        btn_class = "bet-button selected" if is_selected else "bet-button"
-        btn_html = f"<div class='{btn_class}'>{label}</div>"
-
-        # ดักคลิก
-        if cols[i].button(label, key=f"btn_{label}"):
+# สร้างปุ่มในแถวเดียว
+cols = st.columns(len(bet_types))
+for i, label in enumerate(bet_types):
+    is_selected = st.session_state.selected_bet_type == label
+    btn_class = "bet-button selected" if is_selected else "bet-button"
+    with cols[i]:
+        if st.button(f"{label}", key=f"btn_{label}"):
             st.session_state.selected_bet_type = label
+        st.markdown(f"<div class='{btn_class}'>{label}</div>", unsafe_allow_html=True)
 
-        # ปรับ CSS overlay หลังจากคลิก
-        cols[i].markdown(btn_html, unsafe_allow_html=True)
-
-    # ✅ ปุ่มระบบช่วย
-    st.markdown("")
-    st.markdown("<div class='bet-button selected'>➕ ใส่เลขเบิ้ล/ตอง</div>", unsafe_allow_html=True)
-
-    return st.session_state.selected_bet_type
+# ✅ ปุ่มใส่เลขเบิ้ล/ตอง ด้านล่าง
+st.markdown("""
+    <div style='text-align:center; margin-top:10px;'>
+        <button style='background-color:#00aaff; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;'>
+            ➕ ใส่เลขเบิ้ล/ตอง
+        </button>
+    </div>
+""", unsafe_allow_html=True)
