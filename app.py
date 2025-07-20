@@ -3,7 +3,7 @@ from _1_header import render_header
 from _2_pricerate import select_pricerate
 from _3_bet_type import bet_type_selector
 from _4_input_number import input_numbers
-from _5_input_price import input_prices
+from _5_input_price import input_price
 st.set_page_config(page_title="โพยหวยออนไลน์", layout="centered")
 
 # ✅ แสดงหัวเว็บ
