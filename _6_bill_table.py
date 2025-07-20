@@ -25,21 +25,25 @@ def show_bill_table():
             grouped_bills[key] = []
         grouped_bills[key].append(bill["number"])
 
-    # ✅ แสดงตารางแต่ละบิลแบบมีเส้น และจัดให้สวยงาม
+    # ✅ แสดงตารางแต่ละบิลแบบมีเส้น แบ่ง 4 คอลัมน์ ตามตัวอย่าง
     for (bet_type, top, bottom), numbers in grouped_bills.items():
         st.markdown("""
-            <div style='border:1px solid #ccc; border-radius:8px; padding:15px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;'>
-                <div style='display:flex; flex-direction:column;'>
-                    <div style='color:#3498db; font-weight:bold;'>{}</div>
-                    <div style='color:#e74c3c;'>บน × ล่าง</div>
-                    <div style='color:#3498db;'>{} × {}</div>
-                </div>
-                <div style='flex-grow:1; text-align:left; padding:0 20px; font-size:18px;'>
-                    {}
-                </div>
-                <div style='display:flex; gap:10px;'>
-                    <button style='border:none; background-color:#fff; cursor:pointer;'>✏️</button>
-                    <button style='border:none; background-color:#fff; cursor:pointer;'>🗑️</button>
-                </div>
-            </div>
-        """.format(bet_type, top, bottom, " ".join(numbers)), unsafe_allow_html=True)
+            <table style='width:100%; border-collapse:collapse; margin-bottom:15px;'>
+                <tr style='border:1px solid #ccc;'>
+                    <td style='width:20%; text-align:center; vertical-align:middle; border:1px solid #ccc; padding:10px;'>
+                        <div style='color:#3498db; font-weight:bold;'>{bet_type}</div>
+                        <div style='color:#e74c3c;'>บน × ล่าง</div>
+                        <div style='color:#3498db;'>{top} × {bottom}</div>
+                    </td>
+                    <td style='width:60%; text-align:left; vertical-align:middle; border:1px solid #ccc; padding:10px;'>
+                        {' '.join(numbers)}
+                    </td>
+                    <td style='width:10%; text-align:center; vertical-align:middle; border:1px solid #ccc;'>
+                        <button style='border:none; background-color:#fff; cursor:pointer;'>✏️</button>
+                    </td>
+                    <td style='width:10%; text-align:center; vertical-align:middle; border:1px solid #ccc;'>
+                        <button style='border:none; background-color:#fff; cursor:pointer;'>🗑️</button>
+                    </td>
+                </tr>
+            </table>
+        """.format(bet_type=bet_type, top=top, bottom=bottom, numbers=" ".join(numbers)), unsafe_allow_html=True)
