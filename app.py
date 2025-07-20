@@ -19,6 +19,14 @@ rate = select_pricerate()
 # ✅ เลือกประเภทการแทง
 bet_type, double_mode = bet_type_selector()
 
+# ✅ เคลียร์ input fields หากมี flag
+if st.session_state.get("clear_input_fields"):
+    st.session_state.input_text = ""
+    st.session_state.selected_numbers = []
+    st.session_state.price_top_value = 0
+    st.session_state.price_bottom_value = 0
+    st.session_state.clear_input_fields = False  # reset flag
+  
 # ✅ ใส่ตัวเลข
 numbers = input_numbers(bet_type, double_mode)
 
