@@ -3,11 +3,9 @@ import re
 import itertools
 
 def input_numbers(bet_type, double_mode):
-    # ✅ สร้าง session state สำหรับเลข
     if "selected_numbers" not in st.session_state:
         st.session_state.selected_numbers = []
 
-    # ✅ ถ้าเปิดเบิ้ล/ตอง → สร้างเลขให้
     if double_mode:
         if bet_type == "2 ตัว":
             split_numbers = [f"{i}{i}" for i in range(10)]
@@ -17,7 +15,6 @@ def input_numbers(bet_type, double_mode):
             split_numbers = []
         new_numbers = split_numbers
     else:
-        # ✅ กรณีกรอกเอง
         raw_input = st.text_area(
             label="",
             placeholder="กรอกเลข เช่น 21211331 หรือ 21,13,31 หรือ 123/456/789",
@@ -41,39 +38,40 @@ def input_numbers(bet_type, double_mode):
         else:
             new_numbers = split_raw
 
-    # ✅ เพิ่มเลขใหม่ลง session_state (ไม่ซ้ำ)
     for num in new_numbers:
         if num not in st.session_state.selected_numbers:
             st.session_state.selected_numbers.append(num)
 
-    # ✅ ปรับ styling ด้วย CSS
+    # ✅ CSS Grid ปรับให้เรียงไปทางขวา (Wrap เมื่อยาว)
     st.markdown("""
         <style>
         .number-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 10px;
-        }
-        .number-grid form {
-            margin: 0;
+            gap: 8px;
+            margin-top: 12px;
         }
         .number-btn {
             background-color: #3498db;
-            border: none;
             color: white;
-            padding: 10px 18px;
-            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 16px;
+            font-size: 20px;
             border-radius: 8px;
+            border: none;
             cursor: pointer;
+        }
+        .number-btn:hover {
+            background-color: #217dbb;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # ✅ แสดงเลขที่เลือกเป็นปุ่มกดลบ
+    # ✅ แสดงเลขเป็นปุ่มลบแบบแถวแนวนอน
     st.markdown('<div class="number-grid">', unsafe_allow_html=True)
     for num in st.session_state.selected_numbers.copy():
-        if st.button(num, key=f"num_{num}", help="คลิกเพื่อลบ", use_container_width=False):
+        # ใช้ HTML + JS workaround สำหรับคลิกลบเลข
+        if st.button(f"{num}", key=f"btn_{num}", use_container_width=False):
             st.session_state.selected_numbers.remove(num)
     st.markdown('</div>', unsafe_allow_html=True)
 
