@@ -2,7 +2,7 @@ import streamlit as st
 
 # ✅ แสดงยอดรวมและช่องบันทึกช่วยจำในบรรทัดเดียวกันแบบสวยงาม
 
-def show_note(total_amount):
+def show_note_and_total(total_amount):
     col1, col2 = st.columns([1, 3])
 
     with col1:
