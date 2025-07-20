@@ -16,4 +16,5 @@ rate = select_pricerate()
 bet_type, double_mode = bet_type_selector()
 
 # ✅ ใส่ตัวเลข
-numbers = input_numbers(bet_type)
+numbers = input_numbers(bet_type, double_mode)
+
