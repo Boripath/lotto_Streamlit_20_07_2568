@@ -49,5 +49,5 @@ def show_note_and_total():
     with col1:
         st.markdown("<div class='memo-label'>บันทึกช่วยจำ</div>", unsafe_allow_html=True)
     with col2:
-        st.text_input(label="", key="memo", label_visibility="collapsed", placeholder="เช่น น้ำเต๋ม ของ VIP1")
+        st.text_input(label="", key="memo", label_visibility="collapsed", placeholder="เช่น ลูกค้า ไทย1")
 
