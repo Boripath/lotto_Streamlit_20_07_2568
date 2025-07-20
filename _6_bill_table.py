@@ -54,7 +54,3 @@ def show_bill_table():
             </table>
         """, unsafe_allow_html=True)
 
-    # ✅ แสดงยอดรวม (บาท) และช่องบันทึกช่วยจำ
-    total_amount = total_top + total_bottom
-    st.markdown(f"<h4>ยอดรวม (บาท): {total_amount}</h4>", unsafe_allow_html=True)
-    st.text_area("บันทึกช่วยจำ", key="memo")
