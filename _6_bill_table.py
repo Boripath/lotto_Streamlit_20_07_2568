@@ -1,47 +1,51 @@
 import streamlit as st
-import pandas as pd
+from st_pages import Page, show_pages
+from streamlit_extras.stylable_container import stylable_container
+from st_clickable_images import clickable_images
+from PIL import Image
 
-# ตัวอย่างข้อมูลหวย
-LOTTERY_FLAG = "🇹🇭"
-LOTTERY_NAME = "หวยรัฐบาลไทย"
-LOTTERY_ROUND = "วันศุกร์ 1/08/68"
+# 🧾 แสดงบิลที่เพิ่มเข้ามา
 
-
-def show_bill_table():
-    st.markdown(
-        f"""
-        <div style='font-size:20px; font-weight:bold; margin-bottom:10px;'>
-            {LOTTERY_FLAG} {LOTTERY_NAME} งวด {LOTTERY_ROUND}
+def bill_table():
+    st.markdown("""
+        <div style='font-size:22px; font-weight:bold; margin-bottom:10px;'>
+            🇹🇭 หวยรัฐบาลไทย งวด วันศุกร์ 1/08/68
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
     if "bills" not in st.session_state or not st.session_state.bills:
         st.info("ยังไม่มีบิลที่เพิ่มเข้ามา")
         return
 
-    # รวมบิลที่ซ้ำกัน (ประเภท, ราคาบน, ราคาล่าง) เข้าเป็นกลุ่มเดียวกัน
-    df = pd.DataFrame(st.session_state.bills)
-    grouped = df.groupby(["type", "top", "bottom"], as_index=False).agg({"number": lambda x: ' '.join(x)})
+    # ✅ รวมบิลที่เหมือนกันเข้าเป็นกลุ่ม
+    grouped_bills = {}
+    for bill in st.session_state.bills:
+        key = (bill["type"], bill["top"], bill["bottom"])
+        if key not in grouped_bills:
+            grouped_bills[key] = []
+        grouped_bills[key].append(bill["number"])
 
-    # แสดงเป็นตารางพร้อมปุ่ม
-    for i, row in grouped.iterrows():
-        col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 3, 1])
-        col1.markdown(f"<div style='padding-top:8px'><b>{row['type']}</b></div>", unsafe_allow_html=True)
-        col2.markdown(f"<div style='padding-top:8px'>💰 {row['top']}</div>", unsafe_allow_html=True)
-        col3.markdown(f"<div style='padding-top:8px'>💲 {row['bottom']}</div>", unsafe_allow_html=True)
-        col4.markdown(f"<div style='padding-top:8px'>{row['number']}</div>", unsafe_allow_html=True)
-
-        if col5.button("\U0001F58A\ufe0f", key=f"edit_{i}"):
-            st.warning("🔄 ฟีเจอร์แก้ไขกำลังพัฒนา")
-        if col5.button("\u274c", key=f"delete_{i}"):
-            # ลบบิลที่อยู่ในกลุ่มนี้ทั้งหมดออกจาก session_state
-            st.session_state.bills = [bill for bill in st.session_state.bills
-                                      if not (bill['type'] == row['type'] and bill['top'] == row['top']
-                                              and bill['bottom'] == row['bottom'] and bill['number'] in row['number'].split())]
-            st.rerun()
-
-
-if __name__ == "__main__":
-    show_bill_table()
+    # ✅ แสดงตารางแบบมีเส้น กำหนด layout
+    for (bet_type, top, bottom), numbers in grouped_bills.items():
+        with st.container():
+            col1, col2, col3 = st.columns([2, 6, 1])
+            with col1:
+                st.markdown(f"""
+                <div style='text-align:center; color:#3498db;'>
+                    <b>{bet_type}</b><br>
+                    <span style='color:#e74c3c;'>บน × ล่าง</span><br>
+                    <b>{top} × {bottom}</b>
+                </div>
+                """, unsafe_allow_html=True)
+            with col2:
+                st.markdown(f"""
+                <div style='font-size:18px; padding-top:10px;'>
+                    {' '.join(numbers)}
+                </div>
+                """, unsafe_allow_html=True)
+            with col3:
+                col3a, col3b = st.columns([1, 1])
+                with col3a:
+                    st.button("✏️", key=f"edit_{bet_type}_{top}_{bottom}")
+                with col3b:
+                    st.button("🗑️", key=f"delete_{bet_type}_{top}_{bottom}")
