@@ -5,6 +5,7 @@ from _3_bet_type import bet_type_selector
 from _4_input_number import input_numbers
 from _5_input_price import input_price
 from _6_bill_table import show_bill_table
+from _7_note import show_note_and_total
 st.set_page_config(page_title="โพยหวยออนไลน์", layout="centered")
 
 # ✅ แสดงหัวเว็บ
@@ -24,3 +25,6 @@ input_price(numbers, bet_type)
 
 # ✅ แสดงบิล
 show_bill_table()
+
+# ✅ แสดงโน้ตและยอดรวม
+show_note_and_total()
