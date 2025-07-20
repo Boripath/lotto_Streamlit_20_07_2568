@@ -1,18 +1,37 @@
 import streamlit as st
 
 def select_pricerate():
-    # ใช้ HTML และ Streamlit columns เพื่อจัด layout แนวนอนแบบมืออาชีพ
-    col1, col2 = st.columns([1, 2])
+    st.markdown("### ")  # ช่องว่างเล็กน้อยให้พอดีกับหัวข้อ
 
-    with col1:
-        st.markdown("<p style='font-size:18px; padding-top:6px;'>💸 อัตราจ่าย :</p>", unsafe_allow_html=True)
+    # ใช้ HTML + selectbox ด้วย key เฉพาะ
+    st.markdown(
+        """
+        <style>
+        .inline-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .inline-label {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+        </style>
+        <div class='inline-container'>
+            <div class='inline-label'>💸 อัตราจ่าย :</div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    with col2:
-        rate = st.selectbox(
-            label=" ",  # เว้นว่างเพื่อไม่แสดง label ซ้ำ
-            options=["บาทละ 70", "บาทละ 90"],
-            index=1,
-            label_visibility="collapsed"
-        )
+    # วาง selectbox ข้างใน container
+    rate = st.selectbox(
+        label="",  # ไม่แสดง label ด้านบน
+        options=["บาทละ 70", "บาทละ 90"],
+        index=0,
+        label_visibility="collapsed",
+        key="rate_select"
+    )
+
+    st.markdown("</div>", unsafe_allow_html=True)  # ปิด div .inline-container
 
     return rate
