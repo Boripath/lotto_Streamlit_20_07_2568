@@ -1,13 +1,15 @@
 import streamlit as st
-from streamlit_extras.stylable_container import stylable_container
-from st_clickable_images import clickable_images
 from PIL import Image
 
-# 🧾 แสดงบิลที่เพิ่มเข้ามา
+# ❌ ถ้ายังไม่ติดตั้ง streamlit_extras ให้คอมเมนต์บรรทัดนี้ไว้ก่อน
+# from streamlit_extras.stylable_container import stylable_container
+
 def bill_table():
+    # ✅ แสดงชื่อหวย + รูปธงแทน emoji
     st.markdown("""
-        <div style='font-size:22px; font-weight:bold; margin-bottom:10px;'>
-            🇹🇭 หวยรัฐบาลไทย งวด วันศุกร์ 1/08/68
+        <div style='font-size:20px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:10px;'>
+            <img src="https://flagcdn.com/w40/th.png" width="28" style="vertical-align:middle;">
+            หวยรัฐบาลไทย งวด วันศุกร์ 1/08/68
         </div>
     """, unsafe_allow_html=True)
 
@@ -23,7 +25,7 @@ def bill_table():
             grouped_bills[key] = []
         grouped_bills[key].append(bill["number"])
 
-    # ✅ แสดงตารางแบบมีเส้น กำหนด layout
+    # ✅ แสดงบิลแบบมีกรอบ
     for (bet_type, top, bottom), numbers in grouped_bills.items():
         with st.container():
             col1, col2, col3 = st.columns([2, 6, 1])
