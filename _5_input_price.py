@@ -1,7 +1,5 @@
 import streamlit as st
 
-# ✅ ฟังก์ชันสำหรับใส่ราคาบน/ล่าง และเพิ่มบิลสำหรับเลขทั้งหมด
-
 def input_price(numbers, bet_type):
     if not numbers:
         st.info("ยังไม่มีเลขที่ต้องการใส่ราคา")
@@ -14,7 +12,7 @@ def input_price(numbers, bet_type):
     #        {' '.join(numbers)}
     #    </div>
     #    """,
-    #    unsafe_allow_html=True
+    #   unsafe_allow_html=True
     #)
 
     # ✅ ใส่ราคาบน/ล่าง บรรทัดเดียวกัน + ปุ่มเพิ่มบิล
@@ -35,6 +33,12 @@ def input_price(numbers, bet_type):
                 "top": price_top,
                 "bottom": price_bottom
             })
+        # ⛳ เพิ่มบิลเข้า session_state ทันที เพื่อให้ _6_bill_table.py ใช้ได้
+        if "bills" not in st.session_state:
+            st.session_state.bills = []
+        st.session_state.bills.extend(bills)
+
+        # ล้างเลขที่เลือกไว้
         st.session_state.selected_numbers.clear()
 
     return bills
