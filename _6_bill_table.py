@@ -4,7 +4,7 @@ from PIL import Image
 # ❌ ถ้ายังไม่ติดตั้ง streamlit_extras ให้คอมเมนต์บรรทัดนี้ไว้ก่อน
 # from streamlit_extras.stylable_container import stylable_container
 
-def bill_table():
+def show_bill_table():
     # ✅ แสดงชื่อหวย + รูปธงแทน emoji
     st.markdown("""
         <div style='font-size:20px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:10px;'>
