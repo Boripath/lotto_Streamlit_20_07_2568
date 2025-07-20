@@ -5,11 +5,9 @@ def input_price(numbers, bet_type):
         st.info("ยังไม่มีเลขที่ต้องการใส่ราคา")
         return []
 
-    # ✅ กำหนดค่า default ราคาถ้าไม่ได้กำหนดใน session
-    if "price_top_value" not in st.session_state:
-        st.session_state.price_top_value = 0
-    if "price_bottom_value" not in st.session_state:
-        st.session_state.price_bottom_value = 0
+    # ✅ กำหนดค่า default ถ้ายังไม่มีใน session
+    st.session_state.setdefault("price_top_value", 0)
+    st.session_state.setdefault("price_bottom_value", 0)
 
     # ✅ ใส่ราคาบน/ล่าง และปุ่มเพิ่มบิล
     col1, col2, col3 = st.columns([1, 1, 1])
@@ -40,13 +38,7 @@ def input_price(numbers, bet_type):
             st.session_state.bills = []
         st.session_state.bills.extend(bills)
 
-        # ✅ ล้างข้อมูลแบบปลอดภัย (ใช้ widget-disabled key ชั่วคราว)
-        st.session_state.input_text = ""
-        st.session_state.selected_numbers = []
-        st.session_state.editing_bill = None
-
-        # ใช้ trigger reset ผ่าน query param
-        st.query_params.clear()  # reset state-safe
-        st.experimental_rerun()
+        # ✅ ล้างค่าโดยตั้ง flag เพื่อให้ app.py เคลียร์
+        st.session_state.clear_input_fields = True
 
     return bills
