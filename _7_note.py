@@ -1,15 +1,12 @@
 import streamlit as st
 
-def show_note_and_total():
-    if "bills" in st.session_state and st.session_state.bills:
-        total_top = sum(b.get("top", 0) for b in st.session_state.bills)
-        total_bottom = sum(b.get("bottom", 0) for b in st.session_state.bills)
-        total_amount = total_top + total_bottom
+# ✅ แสดงยอดรวมและช่องบันทึกช่วยจำในบรรทัดเดียวกันแบบสวยงาม
 
-        st.markdown(f"<h4 style='display:inline;'>ยอดรวม: {total_amount}</h4> <span>(บาท)</span>", unsafe_allow_html=True)
+def show_note(total_amount):
+    col1, col2 = st.columns([1, 3])
 
-    col1, col2 = st.columns([1, 5])
     with col1:
-        st.markdown("<b>บันทึกช่วยจำ</b>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size:18px; font-weight:bold; margin-top:6px;'>ยอดรวม: {total_amount} <span style='font-weight:normal;'>(บาท)</span></div>", unsafe_allow_html=True)
+
     with col2:
-        st.text_area("", key="memo", height=50)
+        st.text_input("บันทึกช่วยจำ", key="memo", label_visibility="visible", help="ใส่หมายเหตุหรือลายละเอียดเพิ่มเติมที่นี่")
