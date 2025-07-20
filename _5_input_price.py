@@ -8,14 +8,14 @@ def input_price(numbers, bet_type):
         return []
 
     # ✅ จัดเรียงเลขให้อยู่ในแถวเดียวกัน
-    st.markdown(
-        f"""
-        <div style='font-size:22px; font-weight:bold; color:#2980b9; margin-bottom:10px;'>
-            {' '.join(numbers)}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    #st.markdown(
+    #    f"""
+    #    <div style='font-size:22px; font-weight:bold; color:#2980b9; margin-bottom:10px;'>
+    #        {' '.join(numbers)}
+    #    </div>
+    #    """,
+    #    unsafe_allow_html=True
+    #)
 
     # ✅ ใส่ราคาบน/ล่าง บรรทัดเดียวกัน + ปุ่มเพิ่มบิล
     col1, col2, col3 = st.columns([1, 1, 1])
