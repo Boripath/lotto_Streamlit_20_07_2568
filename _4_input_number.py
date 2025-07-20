@@ -23,7 +23,8 @@ def input_numbers(bet_type, double_mode):
             label_visibility="collapsed"
         )
         raw_input = raw_input.replace("\n", " ")
-        split_raw = re.split(r"[\s,/"]+", raw_input.strip())
+        split_raw = re.split(r'[\s,/]+', raw_input.strip())
+
 
         if bet_type == "2 ตัว":
             new_numbers = [num[i:i+2] for num in split_raw for i in range(0, len(num), 2) if len(num[i:i+2]) == 2]
