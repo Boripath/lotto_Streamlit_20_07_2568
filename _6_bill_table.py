@@ -20,14 +20,20 @@ def show_bill_table():
     # ✅ รวมบิลที่เหมือนกันเข้าเป็นกลุ่ม
     grouped_bills = {}
     for bill in st.session_state.bills:
-        key = (bill["type"], bill["top"], bill["bottom"])
+        bet_type = bill.get("type", "")
+        top = bill.get("top", 0)
+        bottom = bill.get("bottom", 0)
+        number = bill.get("number", "")
+
+        key = (bet_type, top, bottom)
         if key not in grouped_bills:
             grouped_bills[key] = []
-        grouped_bills[key].append(bill["number"])
+        grouped_bills[key].append(number)
 
     # ✅ แสดงตารางแต่ละบิลแบบมีเส้น แบ่ง 4 คอลัมน์ ตามตัวอย่าง
     for (bet_type, top, bottom), numbers in grouped_bills.items():
-        st.markdown("""
+        numbers_text = " ".join(numbers)
+        st.markdown(f"""
             <table style='width:100%; border-collapse:collapse; margin-bottom:15px;'>
                 <tr style='border:1px solid #ccc;'>
                     <td style='width:20%; text-align:center; vertical-align:middle; border:1px solid #ccc; padding:10px;'>
@@ -36,7 +42,7 @@ def show_bill_table():
                         <div style='color:#3498db;'>{top} × {bottom}</div>
                     </td>
                     <td style='width:60%; text-align:left; vertical-align:middle; border:1px solid #ccc; padding:10px;'>
-                        {' '.join(numbers)}
+                        {numbers_text}
                     </td>
                     <td style='width:10%; text-align:center; vertical-align:middle; border:1px solid #ccc;'>
                         <button style='border:none; background-color:#fff; cursor:pointer;'>✏️</button>
@@ -46,4 +52,4 @@ def show_bill_table():
                     </td>
                 </tr>
             </table>
-        """.format(bet_type=bet_type, top=top, bottom=bottom, numbers=" ".join(numbers)), unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
