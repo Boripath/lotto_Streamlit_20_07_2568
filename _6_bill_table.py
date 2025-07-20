@@ -1,11 +1,9 @@
 import streamlit as st
-from st_pages import Page, show_pages
 from streamlit_extras.stylable_container import stylable_container
 from st_clickable_images import clickable_images
 from PIL import Image
 
 # 🧾 แสดงบิลที่เพิ่มเข้ามา
-
 def bill_table():
     st.markdown("""
         <div style='font-size:22px; font-weight:bold; margin-bottom:10px;'>
