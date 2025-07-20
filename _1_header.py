@@ -2,28 +2,35 @@ import streamlit as st
 import datetime
 
 def render_header():
-    lottery_name = "หวยฮานอย พิเศษ"
-    flag_emoji = "🇻🇳"
-    draw_date_str = "20/07/68"
-    draw_datetime = datetime.datetime.strptime("20/07/2568 15:00:00", "%d/%m/%Y %H:%M:%S")
-    draw_datetime = draw_datetime.replace(year=draw_datetime.year - 543)
-
+    # 🔸 ตั้งค่าข้อมูลหวย
+    flag = "🇹🇭"
+    lottery_name = "หวยรัฐบาลไทย"
+    draw_date_str = "วันศุกร์ 1/08/68"
+    deadline_time = "15:00:00"
+    
+    # 🔸 แปลงวันที่ (พ.ศ. → ค.ศ.)
+    full_date_text = "01/08/2568 " + deadline_time
+    deadline_dt = datetime.datetime.strptime(full_date_text, "%d/%m/%Y %H:%M:%S")
+    deadline_dt = deadline_dt.replace(year=deadline_dt.year - 543)
+    
+    # 🔸 เวลาปัจจุบัน & คำนวณเวลาถอยหลัง
     now = datetime.datetime.now()
-    time_left = draw_datetime - now
+    remaining = deadline_dt - now
 
-    if time_left.total_seconds() > 0:
-        time_str = str(time_left).split(".")[0]
-        status_html = f"<span style='color:#e74c3c; font-size:18px;'>เหลือเวลาอีก {time_str}</span>"
+    if remaining.total_seconds() > 0:
+        remaining_str = str(remaining).split(".")[0]
+        countdown_html = f"<span style='color:red; font-size:18px;'>เหลือเวลาอีก {remaining_str}</span>"
     else:
-        status_html = "<span style='color:gray; font-size:18px;'>ปิดรับโพยแล้ว</span>"
+        countdown_html = "<span style='color:gray; font-size:18px;'>ปิดรับโพยแล้ว</span>"
 
+    # 🔸 แสดงแถบหัว
     st.markdown(
         f"""
-        <div style='background-color:#fdfdfd; padding:10px 20px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;'>
+        <div style='background-color:#fff; padding:10px 20px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;'>
             <table style='width:100%;'>
                 <tr>
-                    <td style='font-size:20px;'><span style='font-size:24px;'>{flag_emoji}</span> <b>{lottery_name}</b> งวด <b>{draw_date_str}</b></td>
-                    <td style='text-align:right;'>{status_html}</td>
+                    <td style='font-size:20px;'><span style='font-size:24px;'>{flag}</span> <b>{lottery_name}</b> งวด <b>{draw_date_str}</b></td>
+                    <td style='text-align:right;'>{countdown_html}</td>
                 </tr>
             </table>
         </div>
