@@ -6,60 +6,48 @@ def select_bet_type():
     bet_types = ["2 ตัว", "3 ตัว", "6 กลับ", "วิ่ง", "รูด", "19 ประตู"]
     helper_button = "➕ ใส่เลขเบิ้ล/ตอง"
 
+    # ตั้งค่าเริ่มต้น
     if "selected_bet_type" not in st.session_state:
         st.session_state.selected_bet_type = "2 ตัว"
 
-    # ✅ CSS ปรับแนวนอน + ปรับขนาดปุ่มให้เท่ากัน
+    # ✅ CSS Styling
     st.markdown("""
         <style>
-        .bet-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .blue-button {
-            display: inline-block;
-            border: 2px solid #1E90FF;
-            border-radius: 8px;
-            padding: 8px 0px;
+        .bet-button {
+            border: 2px solid #00aaff;
+            border-radius: 6px;
+            padding: 8px;
+            margin: 4px;
             font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
+            font-weight: bold;
+            color: #00aaff;
             background-color: white;
-            color: #1E90FF;
-            width: 120px;
+            width: 100%;
             text-align: center;
         }
-        .blue-button.selected {
-            background-color: #1E90FF !important;
+        .bet-button.selected {
+            background-color: #00aaff !important;
             color: white !important;
-        }
-        .helper-row {
-            margin-top: 10px;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # ✅ ปุ่มแนวนอน 6 ปุ่มแรก
-    st.markdown('<div class="bet-row">', unsafe_allow_html=True)
-    for label in bet_types:
+    # ✅ แนวนอน: 6 ปุ่มใน 6 columns
+    cols = st.columns(len(bet_types))
+    for i, label in enumerate(bet_types):
         is_selected = (label == st.session_state.selected_bet_type)
-        button_html = f"""
-            <form action="/" method="get">
-                <button name="bet_type" value="{label}" type="submit"
-                    class="blue-button {'selected' if is_selected else ''}">{label}</button>
-            </form>
-        """
-        st.markdown(button_html, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        btn_class = "bet-button selected" if is_selected else "bet-button"
+        btn_html = f"<div class='{btn_class}'>{label}</div>"
 
-    # ✅ อ่านค่าที่กดจาก query params
-    query_params = st.query_params
-    if "bet_type" in query_params:
-        st.session_state.selected_bet_type = query_params["bet_type"]
+        # ดักคลิก
+        if cols[i].button(label, key=f"btn_{label}"):
+            st.session_state.selected_bet_type = label
 
-    # ✅ ปุ่มระบบช่วย (อยู่บรรทัดใหม่)
-    st.markdown(f'<div class="helper-row"><button class="blue-button selected">{helper_button}</button></div>', unsafe_allow_html=True)
+        # ปรับ CSS overlay หลังจากคลิก
+        cols[i].markdown(btn_html, unsafe_allow_html=True)
+
+    # ✅ ปุ่มระบบช่วย
+    st.markdown("")
+    st.markdown("<div class='bet-button selected'>➕ ใส่เลขเบิ้ล/ตอง</div>", unsafe_allow_html=True)
 
     return st.session_state.selected_bet_type
