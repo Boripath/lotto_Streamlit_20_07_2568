@@ -2,7 +2,7 @@ import streamlit as st
 import datetime
 
 def render_header():
-    # ✅ ใช้รูปภาพธงแทน Emoji
+    # ✅ ใช้รูปธงชาติไทย
     flag_url = "https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_Thailand.svg"
     flag_html = f"<img src='{flag_url}' width='30' style='vertical-align: middle;'>"
 
@@ -18,7 +18,12 @@ def render_header():
     remaining = deadline_dt - now
 
     if remaining.total_seconds() > 0:
-        remaining_str = str(remaining).split(".")[0]
+        # ✅ แสดงเป็น "12 วัน 06:25:22"
+        days = remaining.days
+        hours, remainder = divmod(remaining.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        time_str = f"{hours:02}:{minutes:02}:{seconds:02}"
+        remaining_str = f"{days} วัน {time_str}"
         countdown_html = f"<span style='color:red; font-size:18px;'>เหลือเวลาอีก {remaining_str}</span>"
     else:
         countdown_html = "<span style='color:gray; font-size:18px;'>ปิดรับโพยแล้ว</span>"
