@@ -6,22 +6,22 @@ def input_price(numbers, bet_type):
         return []
 
     # ✅ กำหนดค่า default ราคาถ้าไม่ได้กำหนดใน session
-    if "price_top" not in st.session_state:
-        st.session_state.price_top = 0
-    if "price_bottom" not in st.session_state:
-        st.session_state.price_bottom = 0
+    if "price_top_value" not in st.session_state:
+        st.session_state.price_top_value = 0
+    if "price_bottom_value" not in st.session_state:
+        st.session_state.price_bottom_value = 0
 
     # ✅ ใส่ราคาบน/ล่าง และปุ่มเพิ่มบิล
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
         price_top = st.number_input(
             "ใส่ราคาบน", min_value=0, step=1,
-            label_visibility="collapsed", key="price_top"
+            label_visibility="collapsed", key="price_top_value"
         )
     with col2:
         price_bottom = st.number_input(
             "ใส่ราคาล่าง", min_value=0, step=1,
-            label_visibility="collapsed", key="price_bottom"
+            label_visibility="collapsed", key="price_bottom_value"
         )
     with col3:
         add_bill = st.button("➕ เพิ่มบิล", use_container_width=True)
@@ -40,14 +40,13 @@ def input_price(numbers, bet_type):
             st.session_state.bills = []
         st.session_state.bills.extend(bills)
 
-        # ✅ ล้างข้อมูลเมื่อเพิ่มเสร็จ
-        st.session_state.input_text = ""              # ล้างข้อความที่กรอก
-        st.session_state.selected_numbers = []        # ล้างเลขที่เลือก
-        st.session_state.price_top = 0                # รีเซ็ตราคาบน
-        st.session_state.price_bottom = 0             # รีเซ็ตราคาล่าง
-        st.session_state.editing_bill = None          # เคลียร์โหมดแก้ไข
+        # ✅ ล้างข้อมูลแบบปลอดภัย (ใช้ widget-disabled key ชั่วคราว)
+        st.session_state.input_text = ""
+        st.session_state.selected_numbers = []
+        st.session_state.editing_bill = None
 
-        st.success("เพิ่มบิลเรียบร้อยแล้ว ✅")
-        st.rerun()
+        # ใช้ trigger reset ผ่าน query param
+        st.query_params.clear()  # reset state-safe
+        st.experimental_rerun()
 
     return bills
