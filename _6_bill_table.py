@@ -9,7 +9,7 @@ def show_bill_table():
     st.markdown("""
         <div style='display:flex; align-items:center; font-size:22px; font-weight:bold; border-bottom:2px solid #ccc; padding-bottom:10px; margin-bottom:20px;'>
             <img src='https://flagcdn.com/w40/th.png' style='margin-right:10px;'>
-            หวยรัฐบาลไทย งวด วันศุกร์ 1/08/68
+            หวยรัฐบาลไทย งวด วันเสาร์ 16/08/68
         </div>
     """, unsafe_allow_html=True)
 
