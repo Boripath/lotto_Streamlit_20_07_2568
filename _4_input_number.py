@@ -1,21 +1,28 @@
 import streamlit as st
 import re
 
-# ✅ ฟังก์ชันสำหรับใส่เลข และแสดงเลขที่แยกออกมา
-
 def input_numbers(bet_type, double_mode):
-    # ✅ สร้างตัวแปรใน session_state ถ้ายังไม่มี
+    st.subheader("🔢 เพิ่มตัวเลขที่จะแทง")
+
+    # เริ่มต้นตัวแปรใน session_state
     st.session_state.setdefault("selected_numbers", [])
     st.session_state.setdefault("input_text", "")
 
-    # ✅ ช่องกรอกเลข
-    st.markdown("<b>กรอกเลข:</b>", unsafe_allow_html=True)
-    input_text = st.text_input("", value=st.session_state.input_text, key="input_text")
+    # ช่องกรอกเลข
+    input_text = st.text_area(
+        "กรอกตัวเลข (สามารถแยกด้วยช่องว่าง, คอมม่า, ขีด ฯลฯ):",
+        value=st.session_state.input_text,
+        height=100,
+        key="input_text_area"
+    )
 
-    # ✅ ตัดเลขอัตโนมัติจาก input_text
+    # ฟังก์ชันช่วย: ตัดเลขอัตโนมัติจากข้อความที่กรอก
+    def extract_numbers(text, length):
+        clean_text = re.sub(r"[^0-9]", "", text)
+        return [clean_text[i:i+length] for i in range(0, len(clean_text), length) if len(clean_text[i:i+length]) == length]
+
+    # ตัดเลขตาม bet_type และ double_mode
     numbers = []
-    clean_text = re.sub(r"[^0-9]", "", input_text)
-
     if double_mode:
         # โหมดเบิ้ล/ตอง
         if bet_type == "2 ตัว":
@@ -23,21 +30,30 @@ def input_numbers(bet_type, double_mode):
         elif bet_type == "3 ตัว":
             numbers = [f"{i}{i}{i}" for i in range(10)]
     else:
-        if bet_type == "2 ตัว":
-            numbers = [clean_text[i:i+2] for i in range(0, len(clean_text), 2) if len(clean_text[i:i+2]) == 2]
+        if bet_type == "2 ตัว" or bet_type == "รูด" or bet_type == "19 ประตู":
+            numbers = extract_numbers(input_text, 2)
         elif bet_type == "3 ตัว" or bet_type == "6 กลับ":
-            numbers = [clean_text[i:i+3] for i in range(0, len(clean_text), 3) if len(clean_text[i:i+3]) == 3]
+            numbers = extract_numbers(input_text, 3)
+        elif bet_type == "วิ่ง":
+            # ตัดทีละตัวเลขเดียว
+            numbers = list(re.sub(r"[^0-9]", "", input_text))
 
-    # ✅ บันทึกเลขที่แยกได้
+    # บันทึกเลขไว้ใน session_state
     st.session_state.selected_numbers = numbers
+    st.session_state.input_text = input_text
 
-    # ✅ แสดงเลขที่แยกได้ (คลิกลบทีละตัว)
-    st.markdown("<b>เลขที่กรอก:</b>", unsafe_allow_html=True)
-    cols = st.columns(10)
-    for idx, num in enumerate(numbers):
-        if cols[idx % 10].button(num, key=f"del_{idx}"):
-            st.session_state.selected_numbers.remove(num)
-            st.session_state.input_text = " ".join(st.session_state.selected_numbers)
-            st.experimental_rerun()
+    # แสดงเลขที่แยกแล้ว + ปุ่มลบแต่ละเลข
+    st.markdown("#### 📋 เลขที่กรอก")
+    if numbers:
+        cols = st.columns(10)
+        for idx, num in enumerate(numbers):
+            if cols[idx % 10].button(f"❌ {num}", key=f"del_{idx}"):
+                st.session_state.selected_numbers.remove(num)
+                # อัปเดตข้อความที่กรอกใหม่เป็นช่องว่างหรือเลขที่เหลือ
+                st.session_state.input_text = " ".join(st.session_state.selected_numbers)
+                st.experimental_rerun()
+    else:
+        st.info("ยังไม่มีเลขที่แยกออกมา กรุณากรอกเลขให้ครบตามประเภทที่เลือก")
 
-    return numbers
+    # คืนค่าเลขทั้งหมด
+    return st.session_state.selected_numbers
