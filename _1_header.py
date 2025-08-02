@@ -7,7 +7,7 @@ def render_header():
     flag_html = f"<img src='{flag_url}' width='30' style='vertical-align: middle;'>"
 
     lottery_name = "หวยรัฐบาลไทย"
-    draw_date_str = "วันศุกร์ 1/08/68"
+    draw_date_str = "วันเสาร์ 16/08/68"
     deadline_time = "15:00:00"
 
     full_date_text = "01/08/2568 " + deadline_time
