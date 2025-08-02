@@ -1,49 +1,45 @@
 import streamlit as st
+from safe_utils import safe_rerun
 
 def show_bill_table():
     st.subheader("🧾 ตารางบิลทั้งหมด")
+    bills = st.session_state.get("bills", [])
 
-    if "bills" not in st.session_state or not st.session_state.bills:
+    if not bills:
         st.info("ยังไม่มีบิลที่เพิ่มเข้ามา")
         return
 
-    total_amount = 0
+    # รวมกลุ่ม
+    grouped = {}
+    for idx, bill in enumerate(bills):
+        key = (bill["type"], bill["top"], bill["bottom"], bill.get("tod", 0))
+        grouped.setdefault(key, []).append((idx, bill["number"]))
 
-    # แสดงบิลทีละแถว
-    for idx, bill in enumerate(st.session_state.bills):
-        bet_type = bill.get("type", "")
-        number = bill.get("number", "")
-        top = bill.get("top", 0)
-        bottom = bill.get("bottom", 0)
-        tod = bill.get("tod", 0)
+    for (bet_type, top, bottom, tod), entries in grouped.items():
+        numbers = [num for _, num in entries]
+        indices = [i for i, _ in entries]
+        numbers_text = " ".join(numbers)
 
-        amount = top + bottom + tod
-        total_amount += amount
-
-        cols = st.columns([3, 2, 2, 1, 1])
+        cols = st.columns([4, 4, 1, 1])
         with cols[0]:
-            st.markdown(f"**{bet_type}** : {number}")
+            st.markdown(f"**{bet_type}** บน:{top} ล่าง:{bottom} โต๊ด:{tod}")
         with cols[1]:
-            st.markdown(f"บน: {top}")
+            st.markdown(numbers_text)
         with cols[2]:
-            st.markdown(f"ล่าง: {bottom} | โต๊ด: {tod}")
-        with cols[3]:
-            if st.button("✏️ แก้ไข", key=f"edit_{idx}"):
-                # โหลดข้อมูลกลับไปยัง input
-                st.session_state.selected_numbers = [number]
-                st.session_state.input_text = number
-                st.session_state.price_top_value = top
-                st.session_state.price_bottom_value = bottom
-                st.session_state.price_tod_value = tod
+            if st.button("✏️", key=f"edit_{indices[0]}"):
+                index = indices[0]
+                bill = bills[index]
+                st.session_state.selected_numbers = [bill["number"]]
+                st.session_state.input_text = bill["number"]
+                st.session_state.price_top_value = bill["top"]
+                st.session_state.price_bottom_value = bill["bottom"]
+                st.session_state.price_tod_value = bill.get("tod", 0)
                 st.session_state.edit_mode = True
-                st.session_state.edit_index = idx
-                st.experimental_rerun()
-        with cols[4]:
-            if st.button("🗑️ ลบ", key=f"delete_{idx}"):
-                st.session_state.bills.pop(idx)
-                st.success(f"🗑️ ลบบิล {number} เรียบร้อยแล้ว")
-                st.experimental_rerun()
-
-    # แสดงยอดรวม
-    st.markdown("---")
-    st.success(f"💵 ยอดรวมทั้งหมด: {total_amount} บาท")
+                st.session_state.edit_index = index
+                safe_rerun()
+        with cols[3]:
+            if st.button("🗑️", key=f"del_{indices[0]}"):
+                for i in reversed(indices):
+                    st.session_state.bills.pop(i)
+                st.success("ลบบิลเรียบร้อย")
+                safe_rerun()
