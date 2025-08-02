@@ -1,53 +1,40 @@
 import streamlit as st
 
 def show_note_and_total():
-    # คำนวณยอดรวมจาก session_state
+    st.subheader("📝 บันทึกช่วยจำ และยอดรวมทั้งหมด")
+
+    # คำนวณยอดรวมแยกแต่ละประเภท
     total_top = 0
     total_bottom = 0
+    total_tod = 0
 
     for bill in st.session_state.get("bills", []):
-        top = bill.get("top", 0)
-        bottom = bill.get("bottom", 0)
-        total_top += top
-        total_bottom += bottom
+        total_top += bill.get("top", 0)
+        total_bottom += bill.get("bottom", 0)
+        total_tod += bill.get("tod", 0)
 
-    total_amount = total_top + total_bottom
+    total_amount = total_top + total_bottom + total_tod
 
-    # ✅ บรรทัดที่ 1: ยอดรวม
+    # แสดงยอดรวม
     st.markdown(
         f"""
-        <div style='display: flex; align-items: center; font-size: 20px; font-weight: bold; margin-bottom: 20px;'>
-            ยอดรวม: {total_amount} <span style='font-size: 16px; font-weight: normal;'>&nbsp;(บาท)</span>
+        <div style='font-size:18px; margin-bottom:10px;'>
+            💵 รวมยอด: 
+            <span style='color:#27ae60;'>บน {total_top} บาท</span> |
+            <span style='color:#2980b9;'>ล่าง {total_bottom} บาท</span> |
+            <span style='color:#8e44ad;'>โต๊ด {total_tod} บาท</span><br>
+            <b>💰 รวมทั้งหมด: {total_amount} บาท</b>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    # ✅ บรรทัดที่ 2: บันทึกช่วยจำ (แนวเดียวกับ input)
-    st.markdown(
-        """
-        <style>
-        .memo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .memo-label {
-            min-width: 120px;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .memo-input input {
-            height: 40px !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # บันทึกช่วยจำ
+    st.markdown("### 🗒️ บันทึกช่วยจำ")
+    memo = st.text_input("เช่น ลูกค้า: ไทย1 / งวด 16/08/68", key="memo")
 
-    col1, col2 = st.columns([1, 4])
-    with col1:
-        st.markdown("<div class='memo-label'>บันทึกช่วยจำ</div>", unsafe_allow_html=True)
-    with col2:
-        st.text_input(label="", key="memo", label_visibility="collapsed", placeholder="เช่น ลูกค้า ไทย1")
+    # เก็บ memo ไว้ใน session_state
+    st.session_state["memo"] = memo
 
+    # คืนค่า memo และยอดรวมรวม
+    return memo, total_amount
